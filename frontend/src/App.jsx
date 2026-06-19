@@ -1,11 +1,19 @@
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Navbar from './pages/Navbar'
+import Footer from './pages/Footer'
+import Home from './pages/Home'
+import Sugerencias from './pages/Sugerencias'
 
 function App() {
   return (
-    <>
-      <h1>BellaForma</h1>
-      <p>Proyecto en construcción</p>
-    </>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sugerencias" element={<Sugerencias />} />
+      </Routes>
+      <Footer />
+    </BrowserRouter>
   )
 }
 

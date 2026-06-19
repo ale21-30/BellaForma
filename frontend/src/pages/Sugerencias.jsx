@@ -1,147 +1,131 @@
-// Página de Sugerencias - Erick Tapia
-// Esta vista permite a los usuarios enviar sugerencias al equipo de BellaForma
+//Página de sugerencias - Erick Tapia
 
-import { useState } from "react"
-import { supabase } from "../lib/supabaseClient"
+import {useState} from 'react'; //guardar y actualizar el estado del formulario
+import {supabase} from '../lib/supabaseClient'; //conectarse a la base de datos Supabase
 
 export default function Sugerencias() {
+    const[form, setForm] = useState({
+        nombre: '',
+        correo: '',
+        mensaje: ''
+    }); 
 
-  // Aquí guardamos lo que el usuario escribe en el formulario
-  const [form, setForm] = useState({
-    nombre: "",
-    correo: "",
-    mensaje: ""
-  })
+    //mensjaes de exito o error
+    const [exito, setExito] = useState(false);
+    const [error, setError] = useState("");
+    const [cargado, setCargado] = useState(false);
 
-  // Mensajes para decirle al usuario si salió bien o mal
-  const [exito, setExito] = useState(false)
-  const [error, setError] = useState("")
-  const [cargando, setCargando] = useState(false)
+    const handleChange = (e) => { //Ejecucion cada vez que el usuario escribe en un campo del formulario
+        setForm({...form, [e.target.name]: e.target.value
+        });
+    };
 
-  // Esta función se ejecuta cada vez que el usuario escribe en un campo
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  // Esta función se ejecuta cuando el usuario hace clic en "Enviar"
-  const handleSubmit = async (e) => {
-    e.preventDefault() // Evita que la página se recargue
-
-    // Validación: todos los campos son obligatorios
-    if (!form.nombre || !form.correo || !form.mensaje) {
-      setError("Por favor completa todos los campos.")
-      return
+    const handleSubmit = async (e) => { //Ejecucion al enviar el formulario
+        e.preventDefault();
+    
+    if (!form.nombre || !form.correo || !form.mensaje) { //validacion de campos vacios
+        setError("Por favor, complete todos los campos.");
+        return;
     }
 
-    setCargando(true) // Muestra que está procesando
-    setError("")
+    setCargado(true); //indica que se esta procesando el formulario
+    setError(""); //limpia mensajes de error previos
 
-    // Enviamos los datos a la tabla "sugerencias" en Supabase
-    const { error: sbError } = await supabase
-      .from("sugerencias")
-      .insert([{
-        nombre: form.nombre,
-        correo: form.correo,
-        mensaje: form.mensaje
-      }])
+    const{error: sbError} = await supabase.from('sugerencias').insert([ //inserta los datos en la tabla "sugerencias" de Supabase
+        {nombre: form.nombre,
+            correo: form.correo,
+            mensaje: form.mensaje
+        }
+    ]);
 
-    setCargando(false)
+    setCargado(false); //indica que se ha terminado de procesar el formulario
 
-    if (sbError) {
-      // Si Supabase devuelve un error lo mostramos
-      setError("Hubo un error al enviar. Intenta de nuevo.")
+    if (sbError) { //manejo de errores
+        setError("Ocurrió un error al enviar su sugerencia. Por favor, inténtelo de nuevo.");
+        console.error(sbError);
     } else {
-      // Si salió bien, limpiamos el formulario y mostramos mensaje de éxito
-      setExito(true)
-      setForm({ nombre: "", correo: "", mensaje: "" })
+        setExito(true); //indica que el formulario se envió correctamente 
+        setForm({nombre: '', correo: '', mensaje: ''}); //limpia el formulario
     }
-  }
+};
 
-  return (
-    // Contenedor principal centrado en la pantalla
-    <div className="min-h-screen bg-pink-50 flex items-center justify-center px-4">
+return(
+  <div className="min-h-screen bg-pink-50 flex items-center justify-center px-4">
+    
+    <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+      
+      <h1 className="text-2xl font-bold text-pink-600 mb-2">
+        Envíanos tu sugerencia
+      </h1>
 
-      {/* Caja del formulario */}
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+      <p className="text-gray-500 mb-6 text-sm">
+        Tu opinión nos ayuda a mejorar BellaForma
+      </p>
+      {exito && (
+        <div className="bg-green-100 text-green-700 rounded-lg p-3 mb-4 text-sm">
+          ¡Sugerencia enviada correctamente!
+        </div>
+      )}
 
-        {/* Título */}
-        <h1 className="text-2xl font-bold text-pink-600 mb-2">
-          Envíanos tu sugerencia
-        </h1>
+      {error && (
+        <div className="bg-red-100 text-red-600 rounded-lg p-3 mb-4 text-sm">
+          {error}
+        </div>
+      )}
 
-        {/* Subtítulo */}
-        <p className="text-gray-500 mb-6 text-sm">
-          Tu opinión nos ayuda a mejorar BellaForma
-        </p>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-        {/* Mensaje de éxito si se envió bien */}
-        {exito && (
-          <div className="bg-green-100 text-green-700 rounded-lg p-3 mb-4 text-sm">
-            ✅ ¡Sugerencia enviada con éxito! Gracias por tu opinión.
-          </div>
-        )}
+        <div>
+          <label className="text-sm font-medium text-gray-700">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            value={form.nombre}
+            onChange={handleChange}
+            placeholder="Tu nombre completo"
+            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
 
-        {/* Mensaje de error si algo salió mal */}
-        {error && (
-          <div className="bg-red-100 text-red-600 rounded-lg p-3 mb-4 text-sm">
-            ⚠️ {error}
-          </div>
-        )}
+        <div>
+          <label className="text-sm font-medium text-gray-700">Correo</label>
+          <input
+            type="email"
+            id="correo"
+            name="correo"
+            value={form.correo}
+            onChange={handleChange}
+            placeholder="tucorreo@ejemplo.com"
+            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
 
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700">Mensaje</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            value={form.mensaje}
+            onChange={handleChange}
+            placeholder="Escribe tu sugerencia aquí..."
+            rows={4}
+            className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
+          />
+        </div>
 
-          {/* Campo Nombre */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Nombre</label>
-            <input
-              type="text"
-              name="nombre"
-              value={form.nombre}
-              onChange={handleChange}
-              placeholder="Tu nombre completo"
-              className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-          </div>
+        <button
+          type="submit"
+          disabled={cargado}
+          className="bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg py-2 transition-colors disabled:opacity-50"
+        >
+          {cargado ? "Enviando..." : "Enviar sugerencia"}
+        </button>
 
-          {/* Campo Correo */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Correo</label>
-            <input
-              type="email"
-              name="correo"
-              value={form.correo}
-              onChange={handleChange}
-              placeholder="tucorreo@ejemplo.com"
-              className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
-            />
-          </div>
-
-          {/* Campo Mensaje */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Mensaje</label>
-            <textarea
-              name="mensaje"
-              value={form.mensaje}
-              onChange={handleChange}
-              placeholder="Escribe tu sugerencia aquí..."
-              rows={4}
-              className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
-            />
-          </div>
-
-          {/* Botón de enviar */}
-          <button
-            type="submit"
-            disabled={cargando}
-            className="bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg py-2 transition-colors disabled:opacity-50"
-          >
-            {/* Cambia el texto según si está cargando o no */}
-            {cargando ? "Enviando..." : "Enviar sugerencia"}
-          </button>
-
-        </form>
-      </div>
+      </form>
     </div>
-  )
+  </div>)
 }
+
+
+
