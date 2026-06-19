@@ -68,11 +68,9 @@ export async function esAdmin() {
 }
 
 // Recuperación de contraseña - PASO 1: enviar correo (RF-ADM-04)
-// El enlace del correo lleva de vuelta a la misma app (el puerto que
-// configures como Site URL en Supabase, ej. http://localhost:5173).
 export async function recuperarContrasena(correo) {
   try {
-    const redirectTo = window.location.origin;
+    const redirectTo = `${window.location.origin}/restablecer-contrasena`;
     const { error } = await supabase.auth.resetPasswordForEmail(correo, {
       redirectTo,
     });
@@ -100,12 +98,10 @@ export async function actualizarContrasena(nuevaPassword) {
   }
 }
 
-// Suscribirse a los cambios de sesión. El callback recibe (sesion, evento).
-// El "evento" sirve para detectar cuando el usuario llega desde el enlace
-// de recuperación (evento === 'PASSWORD_RECOVERY').
+// Suscribirse a los cambios de sesión (login/logout)
 export function onCambioAuth(callback) {
-  const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
-    callback(sesion, evento);
+  const { data } = supabase.auth.onAuthStateChange((_evento, sesion) => {
+    callback(sesion);
   });
   return data.subscription;
 }
