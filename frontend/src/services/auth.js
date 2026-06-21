@@ -72,7 +72,7 @@ export async function esAdmin() {
 // configures como Site URL en Supabase, ej. http://localhost:5173).
 export async function recuperarContrasena(correo) {
   try {
-    const redirectTo = window.location.origin;
+    const redirectTo = window.location.origin + '/restablecer-contrasena';
     const { error } = await supabase.auth.resetPasswordForEmail(correo, {
       redirectTo,
     });
