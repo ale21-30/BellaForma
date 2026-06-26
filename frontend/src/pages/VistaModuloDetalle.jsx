@@ -1,4 +1,4 @@
-//VDM - Sheyna Tovar
+//VDM - Shirley Sánchez Tovar
 import React from "react";
 
 function ModuleDetail() {
