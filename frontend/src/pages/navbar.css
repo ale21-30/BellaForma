@@ -1,0 +1,45 @@
+//Barra completa 
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-height: 85px;
+}
+
+//logo
+.logo {
+  height: 62px;
+  width: auto;
+}
+
+//titulo
+.title {
+  font-family: 'Montserrat', 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 800; 
+  color: #e896a0;  
+  letter-spacing: 1px; 
+  text-transform: uppercase;
+  text-align: center;
+}
+
+//Botón 
+.ingresar-btn {
+  background-color: #d63384; 
+  color: #160101;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.6rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ingresar-btn:hover {
+  background-color: #b02a6d;
+}
