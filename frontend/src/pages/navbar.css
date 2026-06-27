@@ -1,4 +1,4 @@
-
+/* Barra completa */
 .navbar {
   display: flex;
   align-items: center;
@@ -8,12 +8,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   min-height: 85px;
 }
+
+/* Logo */
 .logo {
   height: 62px;
   width: auto;
 }
 
-//titulo
+/* Título: EXACTAMENTE como tu imagen */
 .title {
   font-family: 'Montserrat', 'Arial Black', 'Helvetica Neue', sans-serif;
   font-size: 1.9rem;
@@ -23,7 +25,8 @@
   text-transform: uppercase;
   text-align: center;
 }
- 
+
+/* Botón Ingresar */
 .ingresar-btn {
   background-color: #d63384; 
   color: #160101;
