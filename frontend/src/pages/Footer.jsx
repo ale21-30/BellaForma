@@ -1,4 +1,4 @@
-// Componente Footer - Jessica Guano
+//Footer - Jessica Guano
 
 import "./Footer.css";
 
